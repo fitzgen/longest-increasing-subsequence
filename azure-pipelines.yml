@@ -3,15 +3,32 @@ pr: ["master"]
 jobs:
   - job: tests
     displayName: "Tests"
+    pool:
+      vmImage: 'ubuntu-16.04'
     steps:
       - template: ci/install-rust.yml
         parameters:
           rust_version: stable
       - bash: |
+          set -ex
+          cargo install cargo-readme
+        displayName: "Install `cargo readme`"
+      - bash: |
+          set -ex
           export RUST_BACKTRACE=1
-          cargo install cargo-readme || exit
-          cargo test --all || exit
-        displayName: "Run cargo test"
+          cargo install cargo-readme
+          cargo test
+        displayName: "Run `cargo test`"
+      - bash: |
+          set -ex
+          sudo apt install valgrind
+        displayName: "Install Valgrind"
+      - bash: |
+          set -ex
+          export RUST_BACKTRACE=1
+          sudo apt install valgrind
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUNNER=valgrind cargo test
+        displayName: "Run `cargo test` under Valgrind"
   - job: check_benches
     displayName: "Check that benches build"
     steps:
@@ -19,5 +36,6 @@ jobs:
         parameters:
           rust_version: stable
       - bash: |
-          cargo check --benches || exit
+          set -ex
+          cargo check --benches
         displayName: "Run cargo check"
