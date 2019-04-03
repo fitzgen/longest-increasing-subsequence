@@ -9,6 +9,7 @@ jobs:
           rust_version: stable
       - bash: |
           export RUST_BACKTRACE=1
+          cargo install cargo-readme || exit
           cargo test --all || exit
         displayName: "Run cargo test"
   - job: check_benches
