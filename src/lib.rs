@@ -175,44 +175,65 @@ pub fn lis_with<T, S, F>(
         return;
     }
 
-    let mut k = 0;
-    let len = items.len();
+    unsafe {
+        let mut k = 0;
+        let len = items.len();
 
-    for i in 0..len {
-        let j = starts[k];
+        for i in 0..len {
+            let j = *get_unchecked(starts, k);
 
-        if less_than(&items[j], &items[i]) {
-            predecessors[i] = j;
-            k += 1;
-            starts[k] = i;
-            continue;
-        }
+            if less_than(get_unchecked(items, j), get_unchecked(items, i)) {
+                set_unchecked(predecessors, i, j);
+                k += 1;
+                set_unchecked(starts, k, i);
+                continue;
+            }
 
-        let mut lo = 0;
-        let mut hi = k;
+            let mut lo = 0;
+            let mut hi = k;
 
-        while lo < hi {
-            let mid = lo / 2 + hi / 2;
-            if less_than(&items[starts[mid]], &items[i]) {
-                lo = mid + 1;
-            } else {
-                hi = mid;
+            while lo < hi {
+                // Get the mid point while handling overflow.
+                let mid = (lo >> 1) + (hi >> 1) + (lo & hi & 1);
+                if less_than(
+                    get_unchecked(items, *get_unchecked(starts, mid)),
+                    get_unchecked(items, i),
+                ) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+
+            if less_than(
+                get_unchecked(items, i),
+                get_unchecked(items, *get_unchecked(starts, lo)),
+            ) {
+                if lo > 0 {
+                    set_unchecked(predecessors, i, *get_unchecked(starts, lo - 1));
+                }
+                set_unchecked(starts, lo, i);
             }
         }
 
-        if less_than(&items[i], &items[starts[lo]]) {
-            if lo > 0 {
-                predecessors[i] = starts[lo - 1];
-            }
-            starts[lo] = i;
-        }
+        let u = k + 1;
+        let mut v = *get_unchecked(starts, k);
+        out_seq.extend((0..u).rev().map(|_| {
+            let w = v;
+            v = *get_unchecked(predecessors, v);
+            w
+        }));
     }
+}
 
-    let u = k + 1;
-    let mut v = starts[k];
-    out_seq.extend((0..u).rev().map(|_| {
-        let w = v;
-        v = predecessors[v];
-        w
-    }));
+#[inline(always)]
+unsafe fn get_unchecked<T>(slice: &[T], index: usize) -> &T {
+    debug_assert!(index < slice.len());
+    slice.get_unchecked(index)
+}
+
+#[inline(always)]
+unsafe fn set_unchecked<T>(slice: &mut [T], index: usize, value: T) {
+    debug_assert!(index < slice.len());
+    *slice.get_unchecked_mut(index) = value;
 }
