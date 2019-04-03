@@ -1,6 +1,10 @@
 /*!
 
-# Longest Increasing Subsequence
+[![](https://docs.rs/longest-increasing-subsequence/badge.svg)](https://docs.rs/longest-increasing-subsequence/)
+[![](https://img.shields.io/crates/v/longest-increasing-subsequence.svg)](https://crates.io/crates/longest-increasing-subsequence)
+[![](https://img.shields.io/crates/d/longest-increasing-subsequence.svg)](https://crates.io/crates/longest-increasing-subsequence)
+
+## Longest Increasing Subsequence
 
 > The longest increasing subsequence problem is to find a subsequence of a given
 > sequence in which the subsequence's elements are in sorted order, lowest to
@@ -21,7 +25,7 @@ Note that there is not always a *singular* LIS. Consider this sequence:
 
 In this sequence, both *2, 5* and *2, 6* are LISs.
 
-# API
+## API
 
 This crate exposes two functions for finding a longest increasing subsequence
 within a slice:
