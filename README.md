@@ -4,6 +4,7 @@
 [![](https://docs.rs/longest-increasing-subsequence/badge.svg)](https://docs.rs/longest-increasing-subsequence/)
 [![](https://img.shields.io/crates/v/longest-increasing-subsequence.svg)](https://crates.io/crates/longest-increasing-subsequence)
 [![](https://img.shields.io/crates/d/longest-increasing-subsequence.svg)](https://crates.io/crates/longest-increasing-subsequence)
+[![Build Status](https://dev.azure.com/fitzgen/longest-increasing-subsequence/_apis/build/status/fitzgen.longest-increasing-subsequence?branchName=master)](https://dev.azure.com/fitzgen/longest-increasing-subsequence/_build/latest?definitionId=1&branchName=master)
 
 ### Longest Increasing Subsequence
 
